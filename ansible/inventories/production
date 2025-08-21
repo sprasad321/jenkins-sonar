@@ -1,2 +1,2 @@
 [testservers]
-server2 172.171.49.174 ansible_ssh_user=azureuser
+server2 ansible_host=172.171.49.174 ansible_ssh_user=azureuser

@@ -22,8 +22,8 @@
       file:
         path: "{{ tomcat_install_dir }}"
         state: directory
-        owner: sowmya
-        group: sowmya
+        owner: azureuser
+        group: azureuser
 
     - name: Download Tomcat
       get_url:
@@ -40,16 +40,16 @@
     - name: Fix ownership recursively for Tomcat
       file:
         path: "{{ tomcat_install_dir }}"
-        owner: sowmya
-        group: sowmya
+        owner: azureuser
+        group: azureuser
         recurse: yes
 
     - name: Deploy tomcat-users.xml from template
       template:
         src: tomcat-users.xml.j2
         dest: "{{ tomcat_install_dir }}/conf/tomcat-users.xml"
-        owner: hamdu
-        group: hamdu
+        owner: azureuser
+        group: azureuser
         mode: '0644'
 
     - name: Ensure Tomcat bin scripts are executable
@@ -65,8 +65,8 @@
       copy:
         src: "{{ war_src }}"
         dest: "{{ war_dest }}"
-        owner: sowmya
-        group: sowmya
+        owner: azureuser
+        group: azureuser
 
     - name: Debug Tomcat bin directory permissions
       command: ls -l {{ tomcat_install_dir }}/bin

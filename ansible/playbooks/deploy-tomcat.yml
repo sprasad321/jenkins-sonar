@@ -3,57 +3,50 @@
   become: yes
   vars_files:
     - ../vault/credentials.yml
-
-   tasks:
+  tasks:
     - name: Install OpenJDK 17
       apt:
         name: openjdk-17-jdk
         state: present
         update_cache: yes
-
     - name: Ensure wget is installed
       apt:
         name: wget
         state: present
-
     - name: Create a directory for Tomcat
       file:
-        path: "/home/azureuser/tomcat"
+        path: /home/azureuser/tomcat
         state: directory
-        mode: '0777'
-
+        mode: "0777"
     - name: Download Apache Tomcat tar.gz using wget on remote host
-      shell: |
-        wget -O /home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.107/bin/apache-tomcat-9.0.107.tar.gz
-
+      shell: >
+        wget -O /home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz
+        https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.107/bin/apache-tomcat-9.0.107.tar.gz
     - name: Extract Tomcat tar.gz
       unarchive:
-        src: "/home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz"
-        dest: "/home/azureuser/tomcat/"
+        src: /home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz
+        dest: /home/azureuser/tomcat/
         remote_src: yes
-
     - name: Copy Amazon.war from control machine to remote host
       copy:
-        src: "/home/sowmya/Amazon.war"
-        dest: "/home/azureuser/Amazon.war"
-        mode: '0644'
-
+        src: /home/sowmya/Amazon.war
+        dest: /home/azureuser/Amazon.war
+        mode: "0644"
     - name: Move Amazon.war to Tomcat webapps folder
-      command: mv /home/azureuser/Amazon.war /home/azureuser/tomcat/apache-tomcat-9.0.107/webapps/
-
+      command: mv /home/azureuser/Amazon.war
+        /home/azureuser/tomcat/apache-tomcat-9.0.107/webapps/
     - name: Set permissions on Tomcat webapps directory
       file:
         path: /home/azureuser/tomcat/apache-tomcat-9.0.107/webapps/
         state: directory
-        mode: '0755'
-
+        mode: "0755"
     - name: Make Tomcat scripts executable
       file:
-        path: "/home/azureuser/tomcat/apache-tomcat-9.0.107/bin/{{ item }}"
-        mode: '0755'
+        path: /home/azureuser/tomcat/apache-tomcat-9.0.107/bin/{{ item }}
+        mode: "0755"
       loop:
         - startup.sh
         - shutdown.sh
-
     - name: Start Tomcat
-      shell: "/home/azureuser/tomcat/apache-tomcat-9.0.107/bin/startup.sh"
+      shell: /home/azureuser/tomcat/apache-tomcat-9.0.107/bin/startup.sh
+

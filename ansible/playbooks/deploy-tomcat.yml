@@ -23,7 +23,7 @@
         wget -O /home/azureuser/tomcat/apache-tomcat-9.0.108.tar.gz https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.108/bin/apache-tomcat-9.0.108.tar.gz
     - name: Extract Tomcat tar.gz
       unarchive:
-        src: /home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz
+        src: /home/azureuser/tomcat/apache-tomcat-9.0.108.tar.gz
         dest: /home/azureuser/tomcat/
         remote_src: yes
     - name: Copy Amazon.war from control machine to remote host
@@ -33,19 +33,19 @@
         mode: "0644"
     - name: Move Amazon.war to Tomcat webapps folder
       command: mv /home/azureuser/Amazon.war
-        /home/azureuser/tomcat/apache-tomcat-9.0.107/webapps/
+        /home/azureuser/tomcat/apache-tomcat-9.0.108/webapps/
     - name: Set permissions on Tomcat webapps directory
       file:
-        path: /home/azureuser/tomcat/apache-tomcat-9.0.107/webapps/
+        path: /home/azureuser/tomcat/apache-tomcat-9.0.108/webapps/
         state: directory
         mode: "0755"
     - name: Make Tomcat scripts executable
       file:
-        path: /home/azureuser/tomcat/apache-tomcat-9.0.107/bin/{{ item }}
+        path: /home/azureuser/tomcat/apache-tomcat-9.0.108/bin/{{ item }}
         mode: "0755"
       loop:
         - startup.sh
         - shutdown.sh
     - name: Start Tomcat
-      shell: /home/azureuser/tomcat/apache-tomcat-9.0.107/bin/startup.sh
+      shell: /home/azureuser/tomcat/apache-tomcat-9.0.108/bin/startup.sh
 

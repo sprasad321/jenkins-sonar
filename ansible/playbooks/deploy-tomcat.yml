@@ -1,5 +1,5 @@
 ---
-- hosts: test_servers
+- hosts: testservers
   become: yes
   vars_files:
     - ../vault/credentials.yml

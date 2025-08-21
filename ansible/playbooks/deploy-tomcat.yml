@@ -1,0 +1,80 @@
+---
+- hosts: test_servers
+  become: yes
+  vars_files:
+    - ../vault/credentials.yml
+
+  vars:
+    tomcat_version: 9.0.100
+    tomcat_install_dir: /home/sowmya/tomcat
+    war_src: /home/sowmya/Amazon/Amazon/Amazon-Web/target/Amazon.war
+    war_dest: "{{ tomcat_install_dir }}/webapps/Amazon.war"
+
+  tasks:
+
+    - name: Ensure Java is installed
+      apt:
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+
+    - name: Create Tomcat install directory
+      file:
+        path: "{{ tomcat_install_dir }}"
+        state: directory
+        owner: sowmya
+        group: sowmya
+
+    - name: Download Tomcat
+      get_url:
+        url: "https://downloads.apache.org/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+
+    - name: Extract Tomcat
+      unarchive:
+        src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "{{ tomcat_install_dir }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+
+    - name: Fix ownership recursively for Tomcat
+      file:
+        path: "{{ tomcat_install_dir }}"
+        owner: sowmya
+        group: sowmya
+        recurse: yes
+
+    - name: Deploy tomcat-users.xml from template
+      template:
+        src: tomcat-users.xml.j2
+        dest: "{{ tomcat_install_dir }}/conf/tomcat-users.xml"
+        owner: hamdu
+        group: hamdu
+        mode: '0644'
+
+    - name: Ensure Tomcat bin scripts are executable
+      file:
+        path: "{{ tomcat_install_dir }}/bin/{{ item }}"
+        mode: '0755'
+      loop:
+        - startup.sh
+        - catalina.sh
+        - shutdown.sh
+
+    - name: Copy WAR file to Tomcat webapps
+      copy:
+        src: "{{ war_src }}"
+        dest: "{{ war_dest }}"
+        owner: sowmya
+        group: sowmya
+
+    - name: Debug Tomcat bin directory permissions
+      command: ls -l {{ tomcat_install_dir }}/bin
+      register: bin_perms
+
+    - debug:
+        var: bin_perms.stdout_lines
+
+    - name: Start Tomcat
+      command: "{{ tomcat_install_dir }}/bin/startup.sh"
+      become: yes

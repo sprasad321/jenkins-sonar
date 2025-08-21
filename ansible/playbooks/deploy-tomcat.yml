@@ -20,8 +20,7 @@
         mode: "0777"
     - name: Download Apache Tomcat tar.gz using wget on remote host
       shell: >
-        wget -O /home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz
-        https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.107/bin/apache-tomcat-9.0.107.tar.gz
+        wget -O /home/azureuser/tomcat/apache-tomcat-9.0.108.tar.gz https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.108/bin/apache-tomcat-9.0.108.tar.gz
     - name: Extract Tomcat tar.gz
       unarchive:
         src: /home/azureuser/tomcat/apache-tomcat-9.0.107.tar.gz

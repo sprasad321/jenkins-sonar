@@ -28,6 +28,9 @@ pipeline {
                     string(credentialsId: 'vault-password-id', variable: 'VAULT_PASSWORD')
                 ]) {
                     sh '''
+                        # Make sure the vault directory exists
+                        mkdir -p ansible/vault
+                        
                         # Fix permissions for SSH key
                         chmod 600 $SSH_KEY_FILE
 
